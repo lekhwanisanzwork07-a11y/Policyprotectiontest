@@ -1,31 +1,564 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Policy Truth Test Calculator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Policy Truth Test</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap');
+
+```
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0d0f14;
+  --card: #14171f;
+  --border: #252830;
+  --accent: #f5c842;
+  --accent-dim: #f5c84220;
+  --red: #ff4d4d;
+  --red-dim: #ff4d4d18;
+  --green: #3ddc84;
+  --green-dim: #3ddc8418;
+  --text: #e8eaf0;
+  --muted: #7a7f94;
+  --input-bg: #1a1e28;
+  --radius: 14px;
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px 48px;
+}
+
+/* ── Header ── */
+.site-header {
+  width: 100%;
+  max-width: 480px;
+  margin-bottom: 28px;
+  text-align: center;
+}
+.site-header .eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.site-header h1 {
+  font-family: var(--font-head);
+  font-size: clamp(22px, 6vw, 28px);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--text);
+}
+.site-header h1 span {
+  color: var(--accent);
+}
+.site-header .sub {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+/* ── Card ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 480px;
+  padding: 28px 24px;
+}
+
+/* ── Form ── */
+.field {
+  margin-bottom: 20px;
+}
+label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+select, input[type="number"] {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7f94' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 38px;
+  cursor: pointer;
+}
+select:focus, input[type="number"]:focus {
+  border-color: var(--accent);
+}
+select option { background: #1a1e28; }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+input[type="number"] { -moz-appearance: textfield; }
+
+/* Radio group */
+.radio-group {
+  display: flex;
+  gap: 12px;
+}
+.radio-option {
+  flex: 1;
+  position: relative;
+}
+.radio-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0; height: 0;
+}
+.radio-option label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--input-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: 0;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  margin-bottom: 0;
+}
+.radio-option input[type="radio"]:checked + label {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+/* Field hint */
+.hint {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 24px 0;
+}
+
+/* Submit button */
+.btn-primary {
+  width: 100%;
+  background: var(--accent);
+  color: #0d0f14;
+  font-family: var(--font-head);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.btn-primary:hover { opacity: 0.88; }
+.btn-primary:active { transform: scale(0.98); }
+
+/* Error */
+.error-msg {
+  background: var(--red-dim);
+  border: 1px solid var(--red);
+  border-radius: 10px;
+  color: var(--red);
+  font-size: 13.5px;
+  padding: 12px 14px;
+  margin-top: 16px;
+  display: none;
+}
+
+/* ── Report Card ── */
+#report { display: none; }
+
+.verdict-badge {
+  display: inline-block;
+  font-family: var(--font-head);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+.verdict-badge.fail {
+  background: var(--red-dim);
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+.verdict-badge.pass {
+  background: var(--green-dim);
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+
+.verdict-big {
+  font-family: var(--font-head);
+  font-size: clamp(32px, 9vw, 44px);
+  font-weight: 800;
+  line-height: 1.05;
+  margin-bottom: 20px;
+}
+.verdict-big.fail { color: var(--red); }
+.verdict-big.pass { color: var(--green); }
+
+.cover-line {
+  font-size: 14.5px;
+  color: var(--text);
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+.cover-line strong { color: var(--accent); }
+
+.underinsured-line {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--red-dim);
+  border-left: 3px solid var(--red);
+  padding: 12px 14px;
+  border-radius: 0 10px 10px 0;
+  margin: 16px 0;
+}
+.protected-line {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--green-dim);
+  border-left: 3px solid var(--green);
+  padding: 12px 14px;
+  border-radius: 0 10px 10px 0;
+  margin: 16px 0;
+}
+
+/* Share card */
+.share-card {
+  background: #1a1e28;
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--muted);
+  margin: 20px 0;
+  line-height: 1.55;
+}
+.share-card span { color: var(--text); font-style: normal; font-weight: 600; }
+
+/* Context table */
+.context-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 16px 0;
+}
+.context-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.context-table td:first-child { color: var(--muted); width: 50%; }
+.context-table td:last-child { color: var(--text); font-weight: 600; text-align: right; }
+.context-table tr:last-child td { border-bottom: none; }
+
+/* Recalculate */
+.btn-secondary {
+  width: 100%;
+  background: transparent;
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 13px;
+  border: 1.5px solid var(--accent);
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.2s;
+}
+.btn-secondary:hover { background: var(--accent-dim); }
+
+/* Footer */
+.footer {
+  margin-top: 28px;
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  max-width: 480px;
+  line-height: 1.6;
+}
+```
+
+  </style>
 </head>
 <body>
-    <h1>Policy Truth Test Calculator</h1>
-    <p>Welcome to the Policy Truth Test Calculator application!</p>
-    <form id="calculator">
-        <label for="policy">Enter Policy Amount:</label>
-        <input type="number" id="policy" name="policy" required>
-        <br>
-        <label for="claim">Enter Claim Amount:</label>
-        <input type="number" id="claim" name="claim" required>
-        <br>
-        <button type="submit">Calculate</button>
-    </form>
-    <div id="result"></div>
-    <script>
-        document.getElementById('calculator').onsubmit = function(event) {
-            event.preventDefault();
-            const policy = parseFloat(document.getElementById('policy').value);
-            const claim = parseFloat(document.getElementById('claim').value);
-            const result = claim / policy * 100;
-            document.getElementById('result').innerText = `Claim is ${result.toFixed(2)}% of the Policy.`;
-        };
-    </script>
+
+  <header class="site-header">
+    <p class="eyebrow">Life Insurance Audit</p>
+    <h1>Policy Truth Test –<br><span>Are You Under-Protected?</span></h1>
+    <p class="sub">Enter your details to find out if your current life cover is enough.</p>
+  </header>
+
+  <!-- FORM CARD -->
+
+  <div class="card" id="formCard">
+    <div class="field">
+      <label for="ageGroup">Age Group</label>
+      <select id="ageGroup">
+        <option value="">Select your age group</option>
+        <option value="21-23">21–23</option>
+        <option value="24-27">24–27</option>
+        <option value="28-32">28–32</option>
+        <option value="33-36">33–36</option>
+        <option value="37-40">37–40</option>
+      </select>
+    </div>
+
+```
+<div class="field">
+  <label for="incomeBand">Annual Income Band</label>
+  <select id="incomeBand">
+    <option value="">Select your income range</option>
+    <option value="lt3">&lt; ₹3L</option>
+    <option value="3to6">₹3L–₹6L</option>
+    <option value="6to10">₹6L–₹10L</option>
+    <option value="10to20">₹10L–₹20L</option>
+    <option value="gt20">&gt; ₹20L</option>
+  </select>
+</div>
+
+<div class="field">
+  <label>Do you have financial dependents?</label>
+  <div class="radio-group">
+    <div class="radio-option">
+      <input type="radio" name="dependents" id="depYes" value="yes" />
+      <label for="depYes">Yes</label>
+    </div>
+    <div class="radio-option">
+      <input type="radio" name="dependents" id="depNo" value="no" />
+      <label for="depNo">No</label>
+    </div>
+  </div>
+</div>
+
+<div class="field">
+  <label for="annualPremium">Annual Premium (₹)</label>
+  <input type="number" id="annualPremium" placeholder="e.g. 50000" min="0" />
+</div>
+
+<div class="field">
+  <label for="currentCover">Current Life Cover (Sum Assured) – in Lakh</label>
+  <input type="number" id="currentCover" placeholder="e.g. 20" min="0" />
+  <p class="hint">e.g. 20 = ₹20,00,000</p>
+</div>
+
+<div class="divider"></div>
+
+<button class="btn-primary" onclick="calculate()">Get My Policy Report Card</button>
+<div class="error-msg" id="errorMsg"></div>
+```
+
+  </div>
+
+  <!-- REPORT CARD -->
+
+  <div class="card" id="report">
+    <div id="verdictBadgeWrap"></div>
+    <div id="verdictBig"></div>
+    <div id="coverLine"></div>
+    <div id="underInsuredLine"></div>
+    <div id="shareCard"></div>
+
+```
+<div class="divider"></div>
+<p style="font-size:11.5px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:8px;">Your Inputs</p>
+<table class="context-table" id="contextTable"></table>
+
+<button class="btn-secondary" onclick="recalculate()">↩ Recalculate</button>
+```
+
+  </div>
+
+  <p class="footer">This tool provides an indicative estimate only. Consult a licensed insurance advisor for personalised advice.</p>
+
+  <script>
+    const INCOME_MAP = {
+      lt3:   200000,
+      '3to6': 450000,
+      '6to10': 800000,
+      '10to20': 1500000,
+      gt20:  2500000
+    };
+
+    const INCOME_LABEL = {
+      lt3:    '< ₹3L',
+      '3to6': '₹3L–₹6L',
+      '6to10': '₹6L–₹10L',
+      '10to20': '₹10L–₹20L',
+      gt20:   '> ₹20L'
+    };
+
+    function fmt(n) {
+      return n.toLocaleString('en-IN');
+    }
+
+    function calculate() {
+      const errEl = document.getElementById('errorMsg');
+      errEl.style.display = 'none';
+      errEl.textContent = '';
+
+      const ageGroup     = document.getElementById('ageGroup').value;
+      const incomeBand   = document.getElementById('incomeBand').value;
+      const depRadio     = document.querySelector('input[name="dependents"]:checked');
+      const premiumRaw   = document.getElementById('annualPremium').value;
+      const coverRaw     = document.getElementById('currentCover').value;
+
+      // Validation
+      if (!ageGroup) { showError('Please select your age group.'); return; }
+      if (!incomeBand) { showError('Please select your income band.'); return; }
+      if (!depRadio) { showError('Please indicate whether you have financial dependents.'); return; }
+      if (premiumRaw === '' || isNaN(Number(premiumRaw)) || Number(premiumRaw) < 0) {
+        showError('Please enter a valid annual premium amount.'); return;
+      }
+      if (coverRaw === '' || isNaN(Number(coverRaw)) || Number(coverRaw) <= 0) {
+        showError('Please enter a valid current life cover (greater than 0 Lakh).'); return;
+      }
+
+      const hasDependents = depRadio.value === 'yes';
+      const income        = INCOME_MAP[incomeBand];
+      const multiple      = hasDependents ? 12 : 10;
+      const coverNeeded   = income * multiple;
+
+      const currentCoverLakh = parseFloat(coverRaw);
+      const coverCurrent     = currentCoverLakh * 100000;
+      const annualPremium    = parseFloat(premiumRaw);
+
+      let timesUnderInsured   = coverNeeded / coverCurrent;
+      let underinsuredPercent = (1 - coverCurrent / coverNeeded) * 100;
+      let verdict;
+
+      if (coverCurrent >= coverNeeded) {
+        verdict             = 'pass';
+        timesUnderInsured   = 1;
+        underinsuredPercent = 0;
+      } else {
+        verdict = 'fail';
+      }
+
+      const coverNeededLakh = parseFloat((coverNeeded / 100000).toFixed(1));
+      const coverCurrentDisplay = parseFloat((coverCurrent / 100000).toFixed(1));
+      timesUnderInsured   = parseFloat(timesUnderInsured.toFixed(1));
+      underinsuredPercent = Math.max(0, Math.round(underinsuredPercent));
+
+      renderReport({
+        verdict,
+        ageGroup,
+        incomeBand,
+        incomeLabel: INCOME_LABEL[incomeBand],
+        annualPremium,
+        coverNeededLakh,
+        coverCurrentDisplay,
+        timesUnderInsured,
+        underinsuredPercent
+      });
+    }
+
+    function renderReport(d) {
+      // Verdict badge
+      document.getElementById('verdictBadgeWrap').innerHTML =
+        `<span class="verdict-badge ${d.verdict}">Policy Report Card</span>`;
+
+      // Big verdict
+      const label = d.verdict === 'fail' ? 'Protection Fail' : 'Protection Pass';
+      document.getElementById('verdictBig').innerHTML =
+        `<div class="verdict-big ${d.verdict}">${label}</div>`;
+
+      // Cover line
+      document.getElementById('coverLine').innerHTML =
+        `<p class="cover-line">Recommended cover: <strong>₹${d.coverNeededLakh} Lakh</strong> &nbsp;·&nbsp; Your current cover: <strong>₹${d.coverCurrentDisplay} Lakh</strong></p>`;
+
+      // Under-insured / protected line
+      if (d.verdict === 'fail') {
+        document.getElementById('underInsuredLine').innerHTML =
+          `<div class="underinsured-line">You are <strong>${d.timesUnderInsured}×</strong> under-insured &nbsp;(${d.underinsuredPercent}% under-insured).</div>`;
+      } else {
+        document.getElementById('underInsuredLine').innerHTML =
+          `<div class="protected-line">You meet or exceed the recommended cover for your income. ✓</div>`;
+      }
+
+      // Share card
+      let shareText;
+      if (d.verdict === 'fail') {
+        shareText = `"My policy is a <span>Protection Fail</span>. I was <span>${d.timesUnderInsured}×</span> under-insured."`;
+      } else {
+        shareText = `"My policy is a <span>Protection Pass</span>. I meet the recommended cover."`;
+      }
+      document.getElementById('shareCard').innerHTML =
+        `<div class="share-card">${shareText}</div>`;
+
+      // Context table
+      document.getElementById('contextTable').innerHTML = `
+        <tr><td>Age Group</td><td>${d.ageGroup}</td></tr>
+        <tr><td>Income Band</td><td>${d.incomeLabel}</td></tr>
+        <tr><td>Annual Premium</td><td>₹${d.annualPremium.toLocaleString('en-IN')}</td></tr>
+      `;
+
+      // Toggle visibility
+      document.getElementById('formCard').style.display = 'none';
+      const report = document.getElementById('report');
+      report.style.display = 'block';
+      report.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function recalculate() {
+      document.getElementById('report').style.display = 'none';
+      document.getElementById('formCard').style.display = 'block';
+      document.getElementById('formCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+  </script>
+
 </body>
 </html>

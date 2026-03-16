@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Truth Test Calculator</title>
+</head>
+<body>
+    <h1>Policy Truth Test Calculator</h1>
+    <p>Welcome to the Policy Truth Test Calculator application!</p>
+    <form id="calculator">
+        <label for="policy">Enter Policy Amount:</label>
+        <input type="number" id="policy" name="policy" required>
+        <br>
+        <label for="claim">Enter Claim Amount:</label>
+        <input type="number" id="claim" name="claim" required>
+        <br>
+        <button type="submit">Calculate</button>
+    </form>
+    <div id="result"></div>
+    <script>
+        document.getElementById('calculator').onsubmit = function(event) {
+            event.preventDefault();
+            const policy = parseFloat(document.getElementById('policy').value);
+            const claim = parseFloat(document.getElementById('claim').value);
+            const result = claim / policy * 100;
+            document.getElementById('result').innerText = `Claim is ${result.toFixed(2)}% of the Policy.`;
+        };
+    </script>
+</body>
+</html>
